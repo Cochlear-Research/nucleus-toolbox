@@ -1,0 +1,16 @@
+# Python byte-compiled / optimized / DLL files:
+__pycache__/
+*.py[cod]
+
+# Python build files:
+*.egg-info/
+
+# MATLAB autosave files:
+*.asv
+
+# Doc files created by python scripts:
+sphinx/source/_generated
+
+# Sphinx-built doc files:
+build/
+matlab/html/

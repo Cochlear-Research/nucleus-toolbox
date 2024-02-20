@@ -1,0 +1,30 @@
+##########################################################################
+# Logging configuration YAML file
+# Authors: Brett Swanson
+# Copyright (c) Cochlear Ltd
+##########################################################################
+
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  simple:
+    format: '%(name)s: %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: simple
+    stream: ext://sys.stdout
+
+root:
+  handlers: [console]
+  level: INFO
+
+loggers:
+  summarize_tests:
+    level: INFO
+  # summarize_tests.MATLAB:
+  #   level: DEBUG
+  # summarize_tests.Python:
+  #   level: DEBUG

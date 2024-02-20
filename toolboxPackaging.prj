@@ -1,0 +1,150 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration file="/Users/bswanson/Repo/nucleus/toolboxPackaging.prj" location="/Users/bswanson/Repo/nucleus" name="toolboxPackaging" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>Nucleus Toolbox</param.appname>
+    <param.authnamewatermark>Brett Swanson</param.authnamewatermark>
+    <param.email>bswanson@cochlear.com</param.email>
+    <param.company>Cochlear Ltd</param.company>
+    <param.summary>Sound processing for Nucleus cochlear implant systems</param.summary>
+    <param.description>Nucleus Toolbox is a collection of MATLAB functions implementing sound processing algorithms that are used in Nucleus cochlear implant systems.</param.description>
+    <param.screenshot />
+    <param.version>5.0.0</param.version>
+    <param.output>${PROJECT_ROOT}/Nucleus Toolbox.mltbx</param.output>
+    <param.products.name>
+      <item>MATLAB</item>
+      <item>Signal Processing Toolbox</item>
+    </param.products.name>
+    <param.products.id>
+      <item>1</item>
+      <item>8</item>
+    </param.products.id>
+    <param.products.version>
+      <item>23.2</item>
+      <item>23.2</item>
+    </param.products.version>
+    <param.platforms />
+    <param.guid>a054b363-fc53-411d-ab21-9e0a5137d00b</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%
+.DS_Store
+.git/
+.git*
+python/
+sphinx/
+README.md</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
+    <param.examples />
+    <param.demosxml />
+    <param.apps />
+    <param.registered.apps />
+    <param.docs>${PROJECT_ROOT}/matlab/info.xml</param.docs>
+    <param.getting.started.guide />
+    <param.matlabpath.excludes>
+      <item>/test_in</item>
+      <item>/test_out</item>
+      <item>/matlab/test_out</item>
+    </param.matlabpath.excludes>
+    <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.required.addons />
+    <param.matlab.project.id />
+    <param.matlab.project.name />
+    <param.release.start />
+    <param.release.end />
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses>
+      <item>https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en</item>
+    </param.additional.sw.licenses>
+    <param.additional.sw.win.url>
+      <item />
+    </param.additional.sw.win.url>
+    <param.additional.sw.mac.url>
+      <item />
+    </param.additional.sw.mac.url>
+    <param.additional.sw.linux.url>
+      <item />
+    </param.additional.sw.linux.url>
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.screenshot />
+      <param.output />
+      <param.platforms />
+      <param.exclude.pcodedmfiles />
+      <param.examples />
+      <param.demosxml />
+      <param.apps />
+      <param.registered.apps />
+      <param.getting.started.guide />
+      <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.required.addons />
+      <param.matlab.project.id />
+      <param.matlab.project.name />
+      <param.release.start />
+      <param.release.end />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.additional.sw.names />
+    </unset>
+    <fileset.rootdir>
+      <file>${PROJECT_ROOT}</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/license.txt</file>
+      <file>${PROJECT_ROOT}/matlab</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded />
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}" name="Nucleus Toolbox.mltbx" optional="false">/Users/bswanson/Repo/nucleus/Nucleus Toolbox.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2023b.app</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>13.5.2</osver>
+      <os32>true</os32>
+      <os64>false</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

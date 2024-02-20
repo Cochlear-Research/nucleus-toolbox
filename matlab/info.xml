@@ -1,0 +1,20 @@
+<productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="optional">
+    <?xml-stylesheet type="text/xsl"href="optional"?>
+    <!-- Copyright 2024 Cochlear Ltd -->
+    <!-- The MATLAB help system uses this file to find Nucleus Toolbox documentation. -->
+
+    <!-- (Required) Release of MATLAB. Not currently used. -->
+    <matlabrelease>R2023b</matlabrelease>
+    <!-- (Required) Title of toolbox. Appears in the Contents pane. -->
+    <name>Nucleus</name>
+    <!-- (Required) Label for the toolbox. -->
+    <type>toolbox</type>
+    <!-- (Required) Icon file to display in the Start button. Not currently used. -->
+    <icon></icon>
+    <!-- (Required if you supply help) Relative path to help (HTML) folder -->
+    <help_location>html</help_location>
+    <!-- (Required if you supply help) Icon used in the Help browser TOC -->
+    <!-- Ignored in R2015a and later -->
+    <help_contents_icon></help_contents_icon>
+</productinfo>
