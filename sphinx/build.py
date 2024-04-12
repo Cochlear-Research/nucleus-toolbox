@@ -20,7 +20,7 @@ import subprocess
 from attr import define, field
 import yaml
 
-from summarize_tests import summarize_tests
+from summarize_tests import MatlabTestRun, PythonTestRun, summarize_tests
 
 ################################################################################
 # Paths:
@@ -28,12 +28,15 @@ from summarize_tests import summarize_tests
 this_path = Path(__file__).parent
 build_path = this_path / 'build'
 mat_path = this_path / '../matlab'
-test_result_path = mat_path / 'test_out'
-gen_dir = '_generated'
-gen_path = this_path / 'source' / gen_dir
+gen_path = this_path / 'source' / '_generated'
+
+# Test results (input to summarize_tests):
+py_test_result_path = Path("../python/test/test_out")
+mat_test_result_path = Path("../matlab/test_out")
 
 # Output files:
-results_path = gen_path / 'test_results.txt'
+summary_path = gen_path / "test_summary.txt"
+results_path = gen_path / "test_results.txt"
 
 ##########################################################################
 
@@ -91,7 +94,10 @@ def main():
     #nmt_ver = extract_version()
 
     if args.test:
-        summarize_tests()
+        mat_result_list = list(MatlabTestRun.walk(mat_test_result_path))
+        py_result_list = list(PythonTestRun.walk(py_test_result_path))
+        result_list = mat_result_list + py_result_list
+        summarize_tests(result_list, summary_path, results_path)
 
     if args.copy:
         copy_html()

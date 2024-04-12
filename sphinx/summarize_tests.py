@@ -5,7 +5,6 @@
 # Copyright (c) Cochlear Ltd
 ################################################################################
 
-from dataclasses import dataclass, field
 from datetime import datetime
 import functools
 import json
@@ -21,17 +20,6 @@ import yaml
 ##########################################################################
 
 logger = logging.getLogger(__name__)
-
-################################################################################
-
-# Directories:
-gen_path = Path("source/_generated")
-py_test_result_path = Path("../python/test/test_out")
-mat_test_result_path = Path("../matlab/test_out")
-
-# Output files:
-summary_path = gen_path / "test_summary.txt"
-results_path = gen_path / "test_results.txt"
 
 ################################################################################
 
@@ -259,11 +247,7 @@ class PythonTestRun(TestRun):
 ################################################################################
 
 
-def summarize_tests():
-    # Inputs:
-    mat_result_list = list(MatlabTestRun.walk(mat_test_result_path))
-    py_result_list = list(PythonTestRun.walk(py_test_result_path))
-    result_list = mat_result_list + py_result_list
+def summarize_tests(result_list, summary_path, results_path):
     result_list.sort(key=lambda r: r.meta["date_time"])
 
     # Summary table:
@@ -278,9 +262,3 @@ def summarize_tests():
             r.print_block(n + 1, f_out)
 
     return result_list
-
-
-################################################################################
-
-if __name__ == "__main__":
-    summarize_tests()
