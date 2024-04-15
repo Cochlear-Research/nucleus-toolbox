@@ -22,9 +22,9 @@ root:
   level: INFO
 
 loggers:
-  summarize_tests:
+  tester:
     level: INFO
-  # summarize_tests.MATLAB:
+  # tester.MATLAB:
   #   level: DEBUG
-  # summarize_tests.Python:
+  # tester.Python:
   #   level: DEBUG
