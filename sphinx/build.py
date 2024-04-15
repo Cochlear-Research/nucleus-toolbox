@@ -17,10 +17,8 @@ import shutil
 import stat
 import subprocess
 
-from attr import define, field
 import yaml
-
-from summarize_tests import MatlabTestRun, PythonTestRun, summarize_tests
+from cochlear.sphinx.tester import MatlabTestRun, PythonTestRun, summarize_tests
 
 ################################################################################
 # Paths:
