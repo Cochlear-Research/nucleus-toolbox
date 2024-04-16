@@ -95,6 +95,7 @@ def main():
         mat_result_list = list(MatlabTestRun.walk(mat_test_result_path))
         py_result_list = list(PythonTestRun.walk(py_test_result_path))
         result_list = mat_result_list + py_result_list
+        Path(gen_path).mkdir(parents=True, exist_ok=True)
         summarize_tests(result_list, summary_path, results_path)
 
     if args.copy:
