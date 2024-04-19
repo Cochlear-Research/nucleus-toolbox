@@ -34,7 +34,7 @@ else
 		return
 	end
 	for k = 1:length(s)
-		result = Recursive_test(s(k).path, result);	
+		result = Recursive_test(s(k).path, result);
 	end
 end
 t = toc;
@@ -45,14 +45,15 @@ if (result.num_test == 0)
 end
 
 % Print summary in YAML format:
+% Some keys are shown verbatim in the report so have names starting with upper case.
 fprintf('---\n');
-fprintf('nucleus_version: %s\n', Nucleus_version);
-fprintf('date_time: %s\n', char(datetime('now', 'Format', 'yyyy-MM-dd hh:mm:ss')))
-fprintf('user: %s\n', char(java.lang.System.getProperty('user.name')))
+fprintf('Nucleus Toolbox version: %s\n', Nucleus_version);
+fprintf('User: %s\n', char(java.lang.System.getProperty('user.name')))
 m = matlabRelease;
-fprintf('matlab_version: %s.%d\n', m.Release, m.Update)
-fprintf('platform: %s\n', computer('arch'));
-fprintf('computer: %s\n', Get_computer_id());
+fprintf('MATLAB version: %s.%d\n', m.Release, m.Update)
+fprintf('Platform: %s\n', computer('arch'));
+fprintf('Computer: %s\n', Get_computer_id());
+fprintf('date_time: %s\n', char(datetime('now', 'Format', 'yyyy-MM-dd hh:mm:ss')))
 fprintf('duration: %4.2f seconds\n', t);
 fprintf('num_test: %d\n', result.num_test);
 fprintf('num_pass: %d\n', result.num_pass);
@@ -77,7 +78,7 @@ if isempty(s)
 elseif length(s) > 1
 	error('Multiple directories');	% Should not happen.
 end
-	
+
 fprintf('     %s\n', s.path)	% full path
 
 % Examine .m files:

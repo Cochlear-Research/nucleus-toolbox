@@ -18,7 +18,7 @@ import stat
 import subprocess
 
 import yaml
-from cochlear.sphinx.tester import MatlabTestRun, PythonTestRun, summarize_tests
+from cochlear.sphinx.tester import MatlabTestRun, PythonMatlabTestRun, write_results, write_summary
 
 ################################################################################
 # Paths:
@@ -33,7 +33,7 @@ py_test_result_path = Path("../python/test/test_out")
 mat_test_result_path = Path("../matlab/test_out")
 
 # Output files:
-summary_path = gen_path / "test_summary.txt"
+summary_path = gen_path / "test_summary.csv"
 results_path = gen_path / "test_results.txt"
 
 ##########################################################################
@@ -93,9 +93,12 @@ def main():
 
     if args.test:
         mat_result_list = list(MatlabTestRun.walk(mat_test_result_path))
-        py_result_list = list(PythonTestRun.walk(py_test_result_path))
+        py_result_list = list(PythonMatlabTestRun.walk(py_test_result_path))
         result_list = mat_result_list + py_result_list
-        summarize_tests(result_list, summary_path, results_path)
+        result_list.sort(key=lambda r: r.meta["date_time"])
+        write_results(result_list, results_path)
+        keys = ["Type", "Platform", "MATLAB version"]
+        write_summary(result_list, keys, summary_path)
 
     if args.copy:
         copy_html()

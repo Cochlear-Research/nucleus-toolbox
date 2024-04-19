@@ -21,10 +21,8 @@ root:
   handlers: [console]
   level: INFO
 
-loggers:
-  tester:
-    level: INFO
-  # tester.MATLAB:
-  #   level: DEBUG
-  # tester.Python:
-  #   level: DEBUG
+# loggers:
+#   cochlear.sphinx.tester:
+#     level: DEBUG
+#   cochlear.sphinx.tester.Python:
+#     level: DEBUG
