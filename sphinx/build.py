@@ -8,8 +8,6 @@
 import argparse
 from datetime import date
 import io
-import logging
-import logging.config
 import os
 from pathlib import Path
 import re
@@ -18,7 +16,7 @@ import stat
 import subprocess
 
 import yaml
-from cochlear.sphinx.tester import MatlabTestRun, PythonMatlabTestRun, write_results, write_summary
+from cochlear.sphinx.tester import config_logging, MatlabTestRun, PythonMatlabTestRun, write_results, write_summary
 
 ################################################################################
 # Paths:
@@ -33,28 +31,8 @@ py_test_result_path = Path("../python/test/test_out")
 mat_test_result_path = Path("../matlab/test_out")
 
 # Output files:
-summary_path = gen_path / "test_summary.csv"
+summary_path = gen_path / "test_summary.txt"
 results_path = gen_path / "test_results.txt"
-
-##########################################################################
-
-logger = logging.getLogger("build")
-
-##########################################################################
-
-
-def config_logging(config_file_name="log_config.yaml"):
-    """Configure logging from YAML file in current directory.
-    If file is not found, assume logging is not required.
-    """
-    try:
-        with open(config_file_name) as f_config:
-            d = yaml.safe_load(f_config)
-            logging.config.dictConfig(d)
-            logger.info(config_file_name)
-    except IOError:
-        pass
-
 
 ################################################################################
 
@@ -98,7 +76,7 @@ def main():
         result_list.sort(key=lambda r: r.meta["date_time"])
         write_results(result_list, results_path)
         keys = ["Type", "Platform", "MATLAB version"]
-        write_summary(result_list, keys, summary_path)
+        write_summary(result_list, keys, summary_path, "Test Summary")
 
     if args.copy:
         copy_html()
