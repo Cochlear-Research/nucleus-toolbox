@@ -5,9 +5,6 @@ function FFT_VS_filterbank_demo(audio)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Copyright: Cochlear Ltd
-%      $Change: 157425 $
-%    $Revision: #2 $
-%    $DateTime: 2011/04/04 13:52:15 $
 %      Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -15,18 +12,17 @@ if nargin < 1
     audio = 'asa.wav';
 end
 if ischar(audio)
-	audio = wavread(audio);
+	audio = audioread(audio);
 end
 
+p1 = struct;
 p1.num_bands = 6;
-p1.audio_sample_rate = 16000;
-p1.analysis_rate = p1.audio_sample_rate;
-p1 = Append_process(p1, 'FFT_filterbank_proc');
-p1 = Append_process(p1, 'Vector_sum_proc');
+p1.audio_sample_rate_Hz = 16000;
+p1.analysis_rate_Hz = p1.audio_sample_rate_Hz;
+p1 = FFT_VS_filterbank_proc(p1);
 
-v1 = Process(p1, audio);
+v1 = FFT_VS_filterbank_proc(p1, audio);
 GUI_FTM(p1, v1, 'Filterbank output');
 
 audio = [audio'; real(v1)];
-
-GUI_audio_spectra(audio, p1.audio_sample_rate);
+GUI_audio_spectra(audio, p1.audio_sample_rate_Hz);

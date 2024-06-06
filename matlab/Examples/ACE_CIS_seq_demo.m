@@ -8,34 +8,30 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Copyright: Cochlear Ltd
-%      $Change: 46997 $
-%    $Revision: #1 $
-%    $DateTime: 2006/03/27 16:10:22 $
 %      Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Audio can be either wav file name or audio samples:
 if ~exist('audio', 'var')
-	audio = 'asa';
+	audio = 'asa.wav';
 end
 
-pa = [];
-pa.num_bands            = 20;
-pa.audio_sample_rate    = 16000;
-pa.base_level			= 0;
+p = struct;
+p.electrodes = (20:-1:1)';
+p.audio_sample_rate_Hz = 16000;
 
-cis = pa;
-cis.analysis_rate = pa.audio_sample_rate/24;
-cis = CIS_map(cis);
+p_cis = p;
+p_cis.analysis_rate_Hz = 500;
+p_cis.sub_mag = 0;  % Zero envelope produces a pulse at lower level.
+p_cis = CIS_map(p_cis);
 
-ace = pa;
-ace.num_selected  = 10;
-ace.analysis_rate = 2 * cis.analysis_rate;
-ace = ACE_map(ace);
+p_ace = p;
+p_ace.num_selected = 10;
+p_ace.analysis_rate = 2 * p_cis.analysis_rate_Hz;
+p_ace = ACE_map(p_ace);
 
 % Process with each map:
-
-q_ace = Process(ace, audio);
-q_cis = Process(cis, audio);
+q_ace = Process(p_ace, audio);
+q_cis = Process(p_cis, audio);
 
 Plot_sequence({q_cis, q_ace}, {'CIS 20', 'ACE 10/20'});
