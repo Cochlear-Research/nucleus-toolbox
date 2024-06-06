@@ -27,8 +27,9 @@ if nargin == 0
 end
 
 p = Ensure_field(p, 'map_name', 'CIS');
-p = Ensure_field(p, 'num_selected',	22);
 p = Ensure_field(p, 'channel_stim_rate_Hz',	500);
+p = Ensure_electrodes(p);
+p.num_selected = p.num_bands;
 p = ACE_map(p);
 % Remove Reject_smallest_proc from processing chain:
 k = Find_process(p, @Reject_smallest_proc);
