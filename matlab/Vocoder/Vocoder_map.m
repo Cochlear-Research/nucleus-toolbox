@@ -27,10 +27,8 @@ p = Ensure_field(p, 'analysis_rate_Hz', 500);
 p = Ensure_field(p, 'resample_method', 'linear');
 
 p.calibration_gain_dB = 0;                          % No need for calibration gain in Audio_proc.
-p.channel_stim_rate_Hz = p.audio_sample_rate_Hz;    % For Resample_FTM_proc.
 
 p = Append_process(p, @Audio_proc);
 p = Append_process(p, @FFT_VS_filterbank_proc);
 p = Append_process(p, @Abs_proc);
-p = Append_process(p, @Resample_FTM_proc);
 p = Append_process(p, @Resynth_audio_proc);

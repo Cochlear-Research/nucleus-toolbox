@@ -53,7 +53,8 @@ u = Ensure_field(u, 'display_freq_slice',  0);
 u = Ensure_field(u, 'display_time_slice',  0);
 u = Ensure_field(u, 'num_movie_frames',   50);
 
-% Initialise cell array for audio reconstruction:
+% Initialise for audio reconstruction:
+u.p_resynth = Resynth_audio_proc(p);
 u.audio = cell(u.num_FTMs, 1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -357,7 +358,7 @@ function Do_action(command_str)
 		% Audio:
 
 		case {'Play Reconstructed Audio', 'a'}
-			Play_sound(u);
+			Play_reconstructed_audio(u);
 	end
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -621,12 +622,13 @@ function Set_time_axis_old
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function Play_sound(u)
+function Play_reconstructed_audio(u)
 
 	if isempty(u.audio{u.cell_index})
-		u.audio{u.cell_index} = Sound_simulate(u, u.data{u.cell_index});
-	end
-	soundsc(u.audio{u.cell_index}, u.audio_sample_rate_Hz);
+		u.audio{u.cell_index} = Resynth_audio_proc(u.p_resynth, u.data{u.cell_index});
+    end
+    u.player = audioplayer(u.audio{u.cell_index}, u.audio_sample_rate_Hz);
+    u.player.play();
     Set_figure_data(u);
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
