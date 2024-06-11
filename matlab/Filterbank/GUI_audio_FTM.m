@@ -194,11 +194,10 @@ function s = Callback_string(action_string)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function Play_selected(u)
-	try
-		sound(u.audio(u.selection, :), u.audio_sample_rate_Hz);
-	catch
-		% May have to wait til previous sound has finished playing.
-	end
+	u.player = audioplayer(u.audio(u.selection, :), u.audio_sample_rate_Hz);
+    u.player.play();
+	Set_figure_data(u);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function u = Select_band(u, value)
