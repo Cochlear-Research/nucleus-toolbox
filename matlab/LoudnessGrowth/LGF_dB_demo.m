@@ -1,4 +1,4 @@
-function LGF_dB_demo(options)
+function LGF_dB_demo(qq)
 
 % LGF_demo: Plot Loudness Growth Function, for various parameters.
 
@@ -7,48 +7,42 @@ function LGF_dB_demo(options)
 %      Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if nargin == 0
-	options = '';
+arguments
+    qq = [20];
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plot typical values
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-p = [];
-p.sat_level  = 1.0;
-p.base_level = p.sat_level / From_dB(40);
-p.lgf_Q = 20;
-p = LGF_proc(p);
-
-xx_dB = -50:10;  % 1 db steps
+xx_dB = -50:10;  % 1 dB steps
 xx = From_dB(xx_dB);
-yy = LGF_proc(p, xx);
-
 figure;
-plot(xx_dB, yy);
+hold on;
+
+N = length(qq);
+tt = cell(N, 1);
+for n = 1:N
+    p = struct;
+    p.Q = qq(n);
+    p = LGF_proc(p);
+    yy = LGF_proc(p, xx);
+    plot(xx_dB, yy);
+    tt{n} = sprintf('%d', p.Q);
+end
+
 ylim = [-0.1, 1.1];
 set(gca, 'Xlim', xx_dB([1,end]), 'YLim', ylim);
 hold on
 s = To_dB(p.sat_level);
-line([s, s], ylim, 'LineStyle', ':');
+xline(s, 'LineStyle', ':');
 y = 0.5;
 text(s, y, 'saturation level', 'rotation', 90,...
     'VerticalAlignment', 'bottom',...
     'HorizontalAlignment', 'center');
-s = To_dB(p.base_level);
-line([s, s], ylim, 'LineStyle', ':');
-text(s, y, 'base level', 'rotation', 90,...
+b = To_dB(p.base_level);
+xline(b, 'LineStyle', ':');
+text(b, y, 'base level', 'rotation', 90,...
     'VerticalAlignment', 'bottom',...
     'HorizontalAlignment', 'center');
 
-if contains(options, 'scale')
-    xlabel('Scaled envelope (dB)');
-    ylabel('Magnitude');
-else
-    xlabel('Filter band amplitude (dB)');
-    ylabel('Output magnitude');
-end
-if contains(options, 'clip')
-	print -dmeta
-end
+xlabel('Envelope amplitude (dB)');
+ylabel('Output magnitude');
