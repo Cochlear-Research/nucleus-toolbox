@@ -28,13 +28,15 @@ Tester(d1,  d1_);
 
 % Process:
 
-q1  = [];
-q1  = Append_process(q1, @Example1_proc);
-q1_ = p1_;
-q1_.processes = {@Example1_proc};
-Tester(q1,  q1_);
+pa  = struct;
+pa  = Append_process(pa, @Example1_proc);
+pa_ = p1_;
+pa_.processes = {@Example1_proc};
+pa_.retainers = {false};
+pa_.joiners   = {0};
+Tester(pa,  pa_);
 
-i1 = Process(q1, x1);				% Indirect
+i1 = Process(pa, x1);				% Indirect
 Tester(i1, d1_);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,12 +55,14 @@ Tester(d2,  d2_);
 
 % Process:
 
-q2  = Append_process([], @Example2_proc);
-q2_ = p2_;
-q2_.processes = {@Example2_proc};
-Tester(q2,  q2_);
+pb  = Append_process(struct, @Example2_proc);
+pb_ = p2_;
+pb_.processes = {@Example2_proc};
+pb_.retainers = {false};
+pb_.joiners   = {0};
+Tester(pb,  pb_);
 
-i2 = Process(q2, x1);				% Indirect
+i2 = Process(pb, x1);				% Indirect
 Tester(i2, d2_);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,22 +78,24 @@ Tester(dc,  dc_);
 
 % Process:
 
-qc  = [];
-qc  = Append_process(qc, @Example1_proc);
-qc  = Append_process(qc, @Example2_proc);
-qc_.f1 = 10;
-qc_.f2 = 20;
-qc_.f3 = 30;
-qc_.g1 = 2;
-qc_.g2 = 4;
-qc_.g3 = 8;
-qc_.processes = {@Example1_proc; @Example2_proc};
-Tester(qc,  qc_);
+pc  = struct;
+pc  = Append_process(pc, @Example1_proc);
+pc  = Append_process(pc, @Example2_proc);
+pc_.f1 = 10;
+pc_.f2 = 20;
+pc_.f3 = 30;
+pc_.g1 = 2;
+pc_.g2 = 4;
+pc_.g3 = 8;
+pc_.processes = {@Example1_proc; @Example2_proc};
+pc_.retainers = {false;          false};
+pc_.joiners   = {0;              0};
+Tester(pc,  pc_);
 
-ic = Process(qc, x1);				% Indirect
+ic = Process(pc, x1);				% Indirect
 Tester(ic, dc_);
 
-cc = Process_chain(qc, x1);			% Indirect.
+cc = Process_chain(pc, x1);			% Indirect.
 cc_ = {d1_; dc_};					% Cell array of signals in chain.
 
 Tester(cc, cc_);
@@ -97,32 +103,49 @@ Tester(cc, cc_);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Append a 3rd process without any parameters:
 
-qc  = Append_process(qc, @Abs_proc);
-qc_.processes = {@Example1_proc; @Example2_proc; @Abs_proc};
-Tester(qc, qc_);
+pc  = Append_process(pc, @Abs_proc);
+pc_.processes = {@Example1_proc; @Example2_proc; @Abs_proc};
+pc_.retainers = {false;          false;          false};
+pc_.joiners   = {0;              0;              0};
+Tester(pc, pc_);
 
-ha = Process(qc,  5);				% Indirect
-hb = Process(qc, -5);				% Indirect
+ha = Process(pc,  5);				% Indirect
+hb = Process(pc, -5);				% Indirect
 Tester(ha,  ((30 * 5) + 8));
 Tester(hb, -((30 *-5) + 8));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Automatic parameter recalculation:
+% Parameter recalculation:
 % Change "clinical" parameters:
-qc.f1 = 11;
-qc.g2 =  3;
+pc.f1 = 11;
+pc.g2 =  3;
+% Recalculate derived parameters:
+pc = Process(pc); 
 % Verify that the derived parameters are recalculated:
-[hc, qc] = Process(qc,  5);			% return new param struct too.
-qc_.f1 = 11;
-qc_.f2 = 20;
-qc_.f3 = 31;	% recalculated
-qc_.g1 = 2;
-qc_.g2 = 3;
-qc_.g3 = 6;		% recalculated
-qc_.processes = {@Example1_proc; @Example2_proc; @Abs_proc};
+pc_.f1 = 11;
+pc_.f2 = 20;
+pc_.f3 = 31;	% recalculated
+pc_.g1 = 2;
+pc_.g2 = 3;
+pc_.g3 = 6;		% recalculated
+Tester(pc, pc_);
 
-Tester(qc, qc_);
+hc = Process(pc, 5);
 Tester(hc, ((31 * 5) + 6));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A processing chain with a branch:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+pb = struct;
+pb.gain_dB = 20;
+pb = Append_process(pb, @Abs_proc);
+pb = Append_process(pb, @Gain_proc);
+pb = Append_process(pb, @Mixer_proc, @Abs_proc);
+
+% Micer gives (x * 0.5) + ((10 * x) * 0.5) = 5.5 * x:
+v = Process(pb, [-2, 3]);
+Tester(v, [11, 16.5]);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
