@@ -19,12 +19,18 @@ pa = Append_process(pa, @Example2_proc);
 % Collect primary outputs into cell array:
 ca = Process_chain(pa, x1);
 Tester(ca, {150; 165; 173});
+Tester(Get_process_chain_output(pa, ca, @Example1_proc), 150);
+Tester(Get_process_chain_output(pa, ca, @Example_2out_proc), 165);
+Tester(Get_process_chain_output(pa, ca, @Example2_proc), 173);
 
 % Collect all outputs into cell array;
 % Example_2out_proc has 2 outputs.
 
 na = Process_chain_nargout(pa, x1);
 Tester(na, {{150}; {165, 155}; {173}});
+Tester(Get_process_chain_output(pa, na, @Example1_proc), {150});
+Tester(Get_process_chain_output(pa, na, @Example_2out_proc), {165, 155});
+Tester(Get_process_chain_output(pa, na, @Example2_proc), {173});
 
 % Check that parameters are updated before processing:
 pa.h2 = 6;

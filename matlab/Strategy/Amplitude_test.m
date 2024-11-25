@@ -24,16 +24,21 @@ c0 = Process_chain(p0, x0);
 plot_agc(verbose, p0, t, c0(2:end), description);
 
 % Audio should be scaled so that peak reaches kneepoint:
-Tester(max(abs(c0{1})), p0.agc_kneepoint, tol);
+a = Get_process_chain_output(p0, c0, @Audio_proc);
+Tester(max(abs(a)), p0.agc_kneepoint, tol);
+
 % Microphone freq response should be 0 dB at this freq:
-y = c0{2}(middle:end);
-Tester(max(abs(y)), p0.agc_kneepoint, tol);
+a = Get_process_chain_output(p0, c0, @Freedom_microphone_proc);
+a = a(middle:end);
+Tester(max(abs(a)), p0.agc_kneepoint, tol);
+
 % AGC should not be active:
-y = c0{3}(middle:end);
-Tester(max(abs(y)), p0.agc_kneepoint, tol);
+a = Get_process_chain_output(p0, c0, @FE_AGC_proc);
+a = a(middle:end);
+Tester(max(abs(a)), p0.agc_kneepoint, tol);
 
 % Envelope:
-env = c0{5};
+env = Get_process_chain_output(p0, c0, @Abs_proc);
 num_channels = size(env, 1);
 Tester(num_channels == p0.num_bands);
 % Stable envelope at end:
@@ -49,16 +54,14 @@ Tester(env_end(6), p0.agc_kneepoint/2, tol);
 Tester(env_end(8), p0.agc_kneepoint/2, tol);
 
 % LGF:
-kp = Find_process(p0, @LGF_proc);
-mag = c0{kp};
+mag = Get_process_chain_output(p0, c0, @LGF_proc);
 mag_end = mag(:, end);
 % Pure tone at AGC kneepoint will saturate LGF,
 % on both centre channel and adjacent channels:
 Tester(mag_end(6:8) == 1);
 
 % Channel-magnitude sequence:
-kp = Find_process(p0, @Collate_into_sequence_proc);
-q = c0{kp};
+q = Get_process_chain_output(p0, c0, @Collate_into_sequence_proc);
 q = Subsequence(q, -p0.num_selected); % last scan.
 % Check that magnitude is 1 on centre channel and adjacent channels:
 for c = 6:8
@@ -85,13 +88,18 @@ c1 = Process_chain(p1, x1);
 plot_agc(verbose, p1, t, c1(2:end), description);
 
 % Audio should be scaled so that peak exceeds kneepoint:
-Tester(max(abs(c1{1})), p1.agc_kneepoint * From_dB(3), tol);
+a = Get_process_chain_output(p1, c1, @Audio_proc);
+Tester(max(abs(a)), p1.agc_kneepoint * From_dB(3), tol);
+
 % Microphone freq response should be 0 dB at this freq:
-y = c1{2}(middle:end);
-Tester(max(abs(y)), p1.agc_kneepoint * From_dB(3), tol);
+a = Get_process_chain_output(p1, c1, @Freedom_microphone_proc);
+a = a(middle:end);
+Tester(max(abs(a)), p1.agc_kneepoint * From_dB(3), tol);
+
 % AGC should be active:
-y = c1{3}(middle:end);
-Tester(max(abs(y)), p1.agc_kneepoint, tol);
+a = Get_process_chain_output(p1, c1, @FE_AGC_proc);
+a = a(middle:end);
+Tester(max(abs(a)), p1.agc_kneepoint, tol);
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 description = 'Reference tone to just reach C-level.';
@@ -102,18 +110,22 @@ c2 = Process_chain(p2, x2);
 plot_agc(verbose, p2, t, c2(2:end), description);
 
 % Audio should be scaled to be well below kneepoint:
-Tester(max(abs(c2{1})), p2.agc_kneepoint * From_dB(-14), tol);
+a = Get_process_chain_output(p2, c2, @Audio_proc);
+Tester(max(abs(a)), p2.agc_kneepoint * From_dB(-14), tol);
+
 % Microphone freq response should be 0 dB at this freq:
-agc_in = c2{2}(middle:end);
+a = Get_process_chain_output(p2, c2, @Freedom_microphone_proc);
+agc_in = a(middle:end);
 agc_in_peak = max(abs(agc_in));
 Tester(agc_in_peak, p2.agc_kneepoint * From_dB(-14), tol);
+
 % AGC should be inactive:
-agc_out = c2{3}(middle:end);
+a = Get_process_chain_output(p2, c2, @FE_AGC_proc);
+agc_out = a(middle:end);
 Tester(max(abs(agc_in - agc_out)) < 1e-5);
 
 % Envelope:
-k_env = Find_process(p2, @Gain_proc) - 1;
-env = c2{k_env};
+env = Get_process_chain_output(p2, c2, @Abs_proc);
 num_channels = size(env, 1);
 Tester(num_channels == 22);
 % Stable envelope at end:
@@ -128,8 +140,7 @@ Tester(env_end(6), agc_in_peak/2, tol);
 Tester(env_end(8), agc_in_peak/2, tol);
 
 % LGF:
-kp = Find_process(p2, @LGF_proc);
-mag = c2{kp};
+mag = Get_process_chain_output(p2, c2, @LGF_proc);
 mag_end = mag(:, end);
 % Should just reach saturation level:
 Tester(mag_end(7) == 1);
@@ -141,8 +152,7 @@ Tester(mag_end(6) < 1.0);
 Tester(mag_end(6) > 0.8); 
 
 % Channel-magnitude sequence:
-kp = Find_process(p2, @Collate_into_sequence_proc);
-q = c2{kp};
+q = Get_process_chain_output(p2, c2, @Collate_into_sequence_proc);
 q = Subsequence(q, -p2.num_selected); % last scan.
 % Check that magnitude is 1 on centre channel:
 b = q.channels == 7;
@@ -180,7 +190,7 @@ cu = Process_chain(p3, u);
 plot_agc(verbose, p3, t, cu, description);
 
 % Audio should be scaled so that level is C_dB_SPL:
-audio = cu{1};
+audio = Get_process_chain_output(p3, cu, @Audio_proc);
 level_dB_SPL = Calibrate_dB_SPL(p3, audio);
 Tester(level_dB_SPL, p3.C_dB_SPL, tol);
 % Peaks should be about 1 dB above AGC kneepoint:
@@ -203,14 +213,14 @@ c3 = Process_chain(p3, x3);
 plot_agc(verbose, p3, t, c3, description);
 
 % Audio should be scaled so that level is C_dB_SPL:
-audio = c3{1};
+audio = Get_process_chain_output(p3, c3, @Audio_proc);
 level_dB_SPL = Calibrate_dB_SPL(p3, audio);
 Tester(level_dB_SPL, p3.C_dB_SPL, tol);
 % Peak level should be about 3 dB below AGC kneepoint:
 Tester(max(abs(audio)), p3.agc_kneepoint * From_dB(-3), 0.1);
 
 % AGC should be inactive:
-agc_out = c3{2};
+agc_out = Get_process_chain_output(p3, c3, @FE_AGC_proc);
 Tester(max(abs(audio - agc_out)) < 1e-5);
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -222,8 +232,9 @@ x4 = 'L001s04r.wav';
 c4 = Process_chain_nargout(p4, x4); % get all intermediate outputs
 
 % AGC should not be very active:
-agc_in       = c4{2}{1};
-agc_out_cell = c4{3};
+agc_in_cell  = Get_process_chain_output(p4, c4, @Freedom_microphone_proc);
+agc_out_cell = Get_process_chain_output(p4, c4, @FE_AGC_proc);
+agc_in   = agc_in_cell{1};
 agc_out  = agc_out_cell{1};
 agc_gain = agc_out_cell{2};
 agc_env  = agc_out_cell{3};
