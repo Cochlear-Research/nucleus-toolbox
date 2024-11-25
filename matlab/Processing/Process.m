@@ -11,6 +11,8 @@ function [y, p] = Process(p, x, options)
 % options:     Name-Value arguments:
 %   recalc:      true:  Recalculate parameter struct before processing (default).
 %                false: Specify if parameters are unchanged (saves time).
+%   retain:      false: Do not retain intermediate signals (default).
+%                true: retain intermediate signals.
 %
 % Outputs:
 % y:           Output from the last function in the process chain.
@@ -25,6 +27,7 @@ arguments
     p struct
     x = []
     options.recalc = true
+    options.retain = false
 end 
 
 num_processes = length(p.processes);
@@ -38,10 +41,22 @@ end
 
 if isempty(x)
     y = p;              % Allows: p = Process(p)
-else
-    for n = 1:num_processes
-        f = p.processes{n};
-		x = f(p, x);   % Perform processing.
+    return
+end
+
+% Perform processing:
+retained_signals = cell(num_processes, 1);
+for n = 1:num_processes
+    f = p.processes{n};
+	x = f(p, x);   % Perform processing.
+    if options.retain
+        retained_signals{n} = x;
     end
+end
+
+if options.retain
+    y = retained_signals;
+else
     y = x;
 end
+

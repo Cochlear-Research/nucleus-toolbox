@@ -1,6 +1,8 @@
 function y = Process_chain(p, x)
 
-% Process_chain: Process a signal according to a parameter struct, return intermediate signals.
+% Process_chain: Process a signal and return intermediate signals.
+% This capability is available in Process,
+% but this function is kept for backward compatibility.
 %
 % y = Process_chain(p, x)
 %
@@ -14,15 +16,4 @@ function y = Process_chain(p, x)
 %      Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-num_processes = length(p.processes);
-
-for n = 1:num_processes
-	p = feval(p.processes{n}, p);		% Calculate parameters.
-end
-
-y = cell(num_processes, 1);
-for n = 1:num_processes
-    f = p.processes{n};
-	y{n} = f(p, x);
-	x = y{n};
-end
+y = Process(p, x, retain=true);
