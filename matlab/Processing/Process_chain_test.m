@@ -11,7 +11,7 @@ verbose = Tester(mfilename);
 
 x1 = 5;
 
-pa = [];
+pa = struct;
 pa = Append_process(pa, @Example1_proc);
 pa = Append_process(pa, @Example_2out_proc);
 pa = Append_process(pa, @Example2_proc);

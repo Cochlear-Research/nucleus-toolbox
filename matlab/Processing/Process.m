@@ -1,58 +1,47 @@
-function varargout = Process(p, x, recalc)
+function [y, p] = Process(p, x, options)
 
-% Process: Process a signal according to a parameter struct. 
-% function [x, p] = Process(p, x)
+% Process: Process a signal according to a parameter struct.
+%
+% [y, p] = Process(p, x, options)
 %
 % Inputs:
 % p:           Parameter struct.
 % p.processes: Cell array containing a list of functions to call.
 % x:           Input to the first function in the process chain.
-% recalc:      If true, then parameters are recalculated before
-%                processing the input signal.
-%                Defaults to true if the argument is omitted.
+% options:     Name-Value arguments:
+%   recalc:      true:  Recalculate parameter struct before processing (default).
+%                false: Specify if parameters are unchanged (saves time).
 %
 % Outputs:
-% x:           Output from the last function in the process chain.
+% y:           Output from the last function in the process chain.
+% p:           Updated parameter struct.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Copyright: Cochlear Ltd
 %      Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-switch nargin
+arguments
+    p struct
+    x = []
+    options.recalc = true
+end 
 
-case 0
-		error('First arg must be a parameter struct.');	
-case 1
-		p = Process_parameters(p);
-		varargout = {p};	
-case 2
-		p = Process_parameters(p);
-		y = Process_signal(p, x);
-		varargout = {y, p};	
-case 3
-		if (recalc)
-			p = Process_parameters(p);
-		end
-		y = Process_signal(p, x);
-		varargout = {y, p};
-end
+num_processes = length(p.processes);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function p = Process_parameters(p)
-
-	for n = 1:length(p.processes)
+if options.recalc
+	for n = 1:num_processes
         f = p.processes{n};
 		p = f(p);		% Calculate parameters.
 	end
+end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function x = Process_signal(p, x)
-
-	for n = 1:length(p.processes)
+if isempty(x)
+    y = p;              % Allows: p = Process(p)
+else
+    for n = 1:num_processes
         f = p.processes{n};
-		x = f(p, x);     % Perform processing.
-	end
-
+		x = f(p, x);   % Perform processing.
+    end
+    y = x;
+end
