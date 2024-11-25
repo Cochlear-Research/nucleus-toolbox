@@ -25,9 +25,9 @@ function [y, p] = Process(p, x, options)
 
 arguments
     p struct
-    x = []
+    x = {}
     options.recalc = true
-    options.retain = false
+    options.retain = 0
 end 
 
 num_processes = length(p.processes);
@@ -48,13 +48,22 @@ end
 retained_signals = cell(num_processes, 1);
 for n = 1:num_processes
     f = p.processes{n};
-	x = f(p, x);   % Perform processing.
-    if options.retain
-        retained_signals{n} = x;
+    t = cell(1, nargout(f));
+	[t{:}] = f(p, x);	       % Collect multiple outputs into cell array.
+    x = t{1};
+    switch options.retain
+        case 0
+            % no action
+        case 1
+            retained_signals{n} = x;
+        case 2
+            retained_signals{n} = t;
+        otherwise
+            error("invalid retain option")
     end
 end
 
-if options.retain
+if options.retain > 0
     y = retained_signals;
 else
     y = x;

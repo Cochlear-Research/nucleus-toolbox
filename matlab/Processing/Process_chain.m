@@ -1,6 +1,6 @@
 function y = Process_chain(p, x)
 
-% Process_chain: Process a signal and return intermediate signals.
+% Process_chain: Process a signal and return first output of each process.
 % This capability is available in Process,
 % but this function is kept for backward compatibility.
 %
@@ -16,4 +16,4 @@ function y = Process_chain(p, x)
 %      Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-y = Process(p, x, retain=true);
+y = Process(p, x, retain=1);

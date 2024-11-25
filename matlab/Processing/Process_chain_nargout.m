@@ -1,7 +1,9 @@
 function y = Process_chain_nargout(p, x)
 
-% Process_chain_nargout: Process a signal according to a parameter struct, return all intermediate signals.
-% Each element is a cell array containing all outputs of each function.
+% Process_chain: Process a signal and return all outputs of each process.
+% Each element is a cell array containing all outputs of each process.
+% This capability is available in Process,
+% but this function is kept for backward compatibility.
 %
 % y = Process_chain_nargout(p, x)
 %
@@ -15,17 +17,4 @@ function y = Process_chain_nargout(p, x)
 %      Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-num_processes = length(p.processes);
-
-for n = 1:num_processes
-	p = feval(p.processes{n}, p);		% Calculate parameters.
-end
-
-y = cell(num_processes, 1);
-for n = 1:num_processes
-    f = p.processes{n};
-    t = cell(1, nargout(f));
-	[t{:}] = f(p, x);	                % Collect multiple outputs into cell array.
-	y{n} = t;                           % Store multiple outputs.
-	x = t{1};                           % First output becomes next input.
-end
+y = Process(p, x, retain=2);
