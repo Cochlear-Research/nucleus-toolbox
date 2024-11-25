@@ -10,7 +10,7 @@ function result = Reject_smallest_test(p)
 verbose = Tester(mfilename);
 
 if nargin == 0
-	p = Append_process([], @Reject_smallest_proc);
+	p = Append_process(struct, @Reject_smallest_proc);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

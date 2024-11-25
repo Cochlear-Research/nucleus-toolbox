@@ -13,6 +13,7 @@ pa = Audio_proc(p);
 pv = FFT_VS_filterbank_proc(p);
 
 % Calculate complex FIR coefficients (impulse response) for each band:
+pf = p;
 bin_coeffs = zeros(pv.block_length/2 + 1, pv.block_length);
 nn = (0:(pv.block_length - 1))';
 rr = -2i * pi * nn / pv.block_length; % factor out common sub-expression from loopv.
@@ -28,6 +29,7 @@ band_coeffs = flip(band_coeffs, 2);
 for n = 1:pv.num_bands
     pf.numer{n} = band_coeffs(n, :);
 end
+pf = FIR_filterbank_proc(pf);
 
 %% Process audio:
 audio = Audio_proc(pa, 'asa.wav');
