@@ -11,11 +11,12 @@ function [y, p] = Process(p, x, options)
 % options:     Name-Value arguments:
 %   recalc:      true:  Recalculate parameter struct before processing (default).
 %                false: Specify if parameters are unchanged (saves time).
-%   retain:      false: Do not retain intermediate signals (default).
-%                true: retain intermediate signals.
+%   retain:      0: Do not retain intermediate signals (default).
+%                1: Retain first output of each process.
+%                2: Retain all outputs of each process.
 %
 % Outputs:
-% y:           Output from the last function in the process chain.
+% y:           Output with format depending on options.retain.
 % p:           Updated parameter struct.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,26 +47,26 @@ end
 
 % Perform processing:
 retained_signals = cell(num_processes, 1);
+
 for n = 1:num_processes
     f = p.processes{n};
     t = cell(1, nargout(f));
 	[t{:}] = f(p, x);	       % Collect multiple outputs into cell array.
     x = t{1};
-    switch options.retain
-        case 0
-            % no action
-        case 1
-            retained_signals{n} = x;
-        case 2
-            retained_signals{n} = t;
-        otherwise
-            error("invalid retain option")
+    if options.retain > 0
+        retained_signals{n} = t;
     end
 end
 
-if options.retain > 0
-    y = retained_signals;
-else
-    y = x;
+switch options.retain
+    case 0
+        y = x;
+    case 1
+        y = cell(num_processes, 1);
+        for n = 1:num_processes
+            y{n} = retained_signals{n}{1};
+        end
+    case 2
+        y = retained_signals;
 end
 
