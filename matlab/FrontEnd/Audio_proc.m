@@ -37,7 +37,7 @@ case 1	% Parameter calculations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Clocks:
-    p = Ensure_field(p, 'audio_sample_rate_Hz',            16000); % Hz
+    p = Ensure_field(p, 'audio_sample_rate_Hz',         16000); % Hz
 	p = Ensure_field(p, 'audio_sample_rate_tolerance',  1.06);
 
     % A reference pure tone with amplitude +/-1.0 is defined to represent a certain Sound Pressure Level:
@@ -74,13 +74,10 @@ case 2	% Processing
 
     end
 
-    % Sound pressure level is based on RMS value:
-    audio_rms_dB = To_dB(rms(x));
-    % A full scale +-1 reference pure tone has RMS level of -3 dB relative to FS.
-    % Therefore, the unscaled audio corresponds to the following sound pressure level:
-    audio_dB_SPL = audio_rms_dB + p.reference_dB_SPL + To_dB(sqrt(2));
+    % Calculate the sound pressure level represented by the wav file before scaling:
+    audio_dB_SPL = Calibrate_dB_SPL(p, x);
 
-    if isfield(p, 'calibration_gain_dB')       
+    if isfield(p, 'calibration_gain_dB')
         calibration_gain_dB = p.calibration_gain_dB;
     else
         % Calculate the calibration gain that will produce the desired sound pressure level:

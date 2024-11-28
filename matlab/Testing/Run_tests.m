@@ -49,8 +49,12 @@ end
 fprintf('---\n');
 fprintf('Nucleus Toolbox version: %s\n', Nucleus_version);
 fprintf('User: %s\n', char(java.lang.System.getProperty('user.name')))
-m = matlabRelease;
-fprintf('MATLAB version: %s.%d\n', m.Release, m.Update)
+try
+    m = matlabRelease;
+    fprintf('MATLAB version: %s.%d\n', m.Release, m.Update)
+catch
+    fprintf('MATLAB version: %s\n', version)    % prior to R2020b  
+end
 fprintf('Platform: %s\n', computer('arch'));
 fprintf('Computer: %s\n', Get_computer_id());
 fprintf('date_time: %s\n', char(datetime('now', 'Format', 'yyyy-MM-dd hh:mm:ss')))
