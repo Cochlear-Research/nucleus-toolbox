@@ -5,6 +5,8 @@ function p = Vocoder_map(p)
 %   audio_out = Process(p, audio_in)
 % It only performs the minimal operations needed for an audio input;
 % it does not create a pulse sequence as an intermediate step.
+% The microphone frequence response is not applied,
+% so the output spectrum should match the input spectrum.
 %
 % p_out = Vocoder_map(p_in)
 %
