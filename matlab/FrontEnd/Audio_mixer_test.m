@@ -31,7 +31,7 @@ for n = 1:N
     p.audio_dB_SPL = audio_dB_SPL;
     
     pm = p;
-    pm.input_snr_dB = snr_dB;
+    pm.noise_dB_SPL = audio_dB_SPL - snr_dB;
     pm = Audio_mixer_proc(pm);
     
     Tester(pm.audio_sample_rate_Hz, 16000);
@@ -46,9 +46,8 @@ for n = 1:N
     pa = Audio_proc(p);
     speech = Audio_proc(pa, speech_wav);
     noise  = Audio_proc(pa, noise_wav);
-    noise  = noise(1:length(speech));
     
-    audio2 = speech + From_dB(-pm.input_snr_dB) * noise;
+    audio2 = speech + From_dB(-snr_dB) * noise(1:length(speech));
     Tester(audio, audio2, tol);
     
     if verbose > 2
@@ -57,6 +56,17 @@ for n = 1:N
         plot(audio2, 'b');
         Window_title(sprintf('S %d dB, SNR %d dB', audio_dB_SPL, snr_dB))
     end
+
+    % Test sources being signals (not wav files):
+
+    audio3 = Audio_mixer_proc(pm, {speech, noise_wav});
+    Tester(audio, audio3, tol);
+
+    audio4 = Audio_mixer_proc(pm, {speech_wav, noise});
+    Tester(audio, audio4, tol);
+
+    audio5 = Audio_mixer_proc(pm, {speech, noise});
+    Tester(audio, audio5, tol);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
