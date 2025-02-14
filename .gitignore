@@ -14,3 +14,6 @@ sphinx/source/_generated
 # Sphinx-built doc files:
 build/
 matlab/html/
+*.mltbx
+matlab/test_out
+matlab/Sound_voc

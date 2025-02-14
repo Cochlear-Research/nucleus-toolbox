@@ -20,8 +20,9 @@ renames = [
     ("bin_freqs",           "bin_freqs_Hz"),
     ("channel_stim_rate",   "channel_stim_rate_Hz"),
     ("char_freqs",          "best_freqs_Hz"),
-    ("comfort_levels",         "upper_levels"),
+    ("comfort_levels",      "upper_levels"),
     ("crossover_freqs",     "crossover_freqs_Hz"),
+    ("implant_stim_rate",   "implant_stim_rate_Hz"),
     ("period",              "period_us"),
     ("periods",             "periods_us"),
     ("phase_gap",           "phase_gap_us"),
@@ -31,7 +32,7 @@ renames = [
     ("response_freqs",      "response_freqs_Hz"),
     ("RF_clock",            "RF_clock_Hz"),
     ("sample_rate",         "sample_rate_Hz"),
-    ("threshold_levels",       "lower_levels"),
+    ("threshold_levels",    "lower_levels"),
 ]
 # fmt: on
 
