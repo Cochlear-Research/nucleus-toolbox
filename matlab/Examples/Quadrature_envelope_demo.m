@@ -28,10 +28,9 @@ hold on
 
 N = size(v, 2);
 t = 1000*(1:N)/p.analysis_rate_Hz;
-line_width = 2;
-plot(t, real(u), 'r:', 'LineWidth', line_width);
-plot(t, imag(u), 'g:', 'LineWidth', line_width);
-plot(t, abs(u),  'k:', 'LineWidth', line_width);
+plot(t, real(u), 'ro-', 'MarkerFaceColor', 'w', 'MarkerSize', 4);
+plot(t, imag(u), 'go-', 'MarkerFaceColor', 'w', 'MarkerSize', 4);
+plot(t, abs(u),  'ko-', 'MarkerFaceColor', 'w', 'MarkerSize', 4);
 
 ts = t(1:16:end);
 us = u(1:16:end);

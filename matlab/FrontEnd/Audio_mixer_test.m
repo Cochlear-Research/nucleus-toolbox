@@ -24,30 +24,35 @@ N = length(test_cases);
 for n = 1:N
     audio_dB_SPL = test_cases{n}{1};
     snr_dB = test_cases{n}{2};
+    noise_dB_SPL = audio_dB_SPL - snr_dB;
 
     % Common parameters:
     p = struct;
     p.audio_sample_rate_Hz = 16000;
-    p.audio_dB_SPL = audio_dB_SPL;
     
-    pm = p;
-    pm.noise_dB_SPL = audio_dB_SPL - snr_dB;
-    pm = Audio_mixer_proc(pm);
-    
+    pm = Audio_mixer_proc(p);    
     Tester(pm.audio_sample_rate_Hz, 16000);
-    Tester(pm.audio_dB_SPL,     audio_dB_SPL); 
     Tester(pm.reference_dB_SPL, 95);  % from Audio_proc.
     
     speech_wav = 'L001s04r.wav';
     noise_wav = 'ILTASS.wav';
-    audio = Audio_mixer_proc(pm, {speech_wav, noise_wav});
+    audio = Audio_mixer_proc(pm, {
+        {speech_wav, audio_dB_SPL};
+        {noise_wav,  noise_dB_SPL};
+        });
     
-    % Compare to reading separately:
-    pa = Audio_proc(p);
-    speech = Audio_proc(pa, speech_wav);
-    noise  = Audio_proc(pa, noise_wav);
+    % Compare to reading speech and noise separately:
+    ps = p;
+    ps.audio_dB_SPL = audio_dB_SPL;
+    ps = Audio_proc(ps);
+    speech = Audio_proc(ps, speech_wav);
     
-    audio2 = speech + From_dB(-snr_dB) * noise(1:length(speech));
+    pn = p;
+    pn.audio_dB_SPL = noise_dB_SPL;
+    pn = Audio_proc(pn);
+    noise  = Audio_proc(pn, noise_wav);
+    
+    audio2 = speech + noise(1:length(speech));
     Tester(audio, audio2, tol);
     
     if verbose > 2
@@ -59,10 +64,10 @@ for n = 1:N
 
     % Test sources being signals (not wav files):
 
-    audio3 = Audio_mixer_proc(pm, {speech, noise_wav});
+    audio3 = Audio_mixer_proc(pm, {speech, {noise_wav, noise_dB_SPL}});
     Tester(audio, audio3, tol);
 
-    audio4 = Audio_mixer_proc(pm, {speech_wav, noise});
+    audio4 = Audio_mixer_proc(pm, {{speech_wav, audio_dB_SPL}, noise});
     Tester(audio, audio4, tol);
 
     audio5 = Audio_mixer_proc(pm, {speech, noise});

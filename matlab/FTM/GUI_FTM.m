@@ -77,8 +77,8 @@ set(u.image_axes, 'TickDir', 'out', ...
 				  'CLim', [0, u.overall_max_mag]); % Same scale for all FTMs.
 
 	% Draw "cross-hairs" on image:
-u.time_hair = line('Color', 'white');
-u.freq_hair = line('Color', 'white');
+u.time_hair = line('Color', 'blue');
+u.freq_hair = line('Color', 'blue');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plot magnitude at one frequency as a function of time:
