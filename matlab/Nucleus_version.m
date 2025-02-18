@@ -7,4 +7,4 @@ function v = Nucleus_version
 %   Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-v = '5.0.1dev';
+v = '5.1.0';
