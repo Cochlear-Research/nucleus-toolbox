@@ -46,3 +46,7 @@ text(b, y, 'base level', 'rotation', 90,...
 
 xlabel('Envelope amplitude (dB)');
 ylabel('Output magnitude');
+
+path = mfilename;
+exportgraphics(gcf, [path, '.eps']);
+exportgraphics(gcf, [path, '.png']);

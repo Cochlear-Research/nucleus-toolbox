@@ -6,7 +6,7 @@
 ################################################################################
 
 import pytest
-from cochlear.sphinx.tester import PythonMatlabTestRun as TestRun
+from cochlear.sphinx.tester import MatlabPytestRun as TestRun
 from cochlear.nmt import engine, LGF
 
 ################################################################################

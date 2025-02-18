@@ -38,7 +38,7 @@ uf = FIR_filterbank_proc(pf, audio);
 
 %% Quantify differences:
 u_delta = uv - uf; % complex
-rms_delta = rms(u_delta, "all")
+rms_delta = rms(u_delta(:))
 
 %% Plot shows no difference:
 figure, hold on;

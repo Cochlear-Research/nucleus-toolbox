@@ -25,17 +25,19 @@ u.num_FTMs = length(u.data);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Magnitude scale:
 
-for n = 1:u.num_FTMs
-	u.max_mag(n) = max(max(abs(u.data{n})));
-	if u.normalise
-		u.data{n} = u.data{n} / u.max_mag(n);
-	end
-end
-
-if u.normalise
-	u.overall_max_mag = 1;
-else
-	u.overall_max_mag = max(u.max_mag);
+if ~isfield(u, 'overall_max_mag')
+    for n = 1:u.num_FTMs
+	    u.max_mag(n) = max(max(abs(u.data{n})));
+	    if u.normalise
+		    u.data{n} = u.data{n} / u.max_mag(n);
+	    end
+    end
+    
+    if u.normalise
+	    u.overall_max_mag = 1;
+    else
+	    u.overall_max_mag = max(u.max_mag);
+    end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

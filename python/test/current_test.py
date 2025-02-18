@@ -31,5 +31,7 @@ def test_current(chip, min_ua, base):
     cls = eval('current.' + chip)
     cl_py = np.array(cl_mat)
     ua_py = cls.calc_uA_from_CL(cl_py)
-
     assert np.allclose(ua_py, ua_mat)
+
+    cl_mat2 = engine.Microamps_to_current_level_proc(p, ua_mat)
+    assert cl_mat2 == cl_mat
