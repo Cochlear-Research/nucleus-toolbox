@@ -75,34 +75,5 @@ Tester(p4.channel_stim_rate_Hz,	 1800);
 Tester(p4.implant_stim_rate_Hz, 14400);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Check rate_Hz against implant capability
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Stim rate_Hz too high with default phase width:
-p5 = p;
-p5.channel_stim_rate_Hz	=		2000;
-p5.num_selected	        =		  12;
-try
-	Ensure_rate_params(p5);
-	Tester(0);		% FAIL if we reach here.
-catch x
-	Tester(x.identifier, 'Nucleus:Ensure_rate_params');
-	Tester(contains(x.message, 'implant stimulation rate'));
-end
-
-% Stim rate_Hz is too high for specified phase width:
-p6 = p;
-p6.channel_stim_rate_Hz	=		1000;
-p6.num_selected	        =		  10;
-p6.phase_width_us       =         50;
-try
-	Ensure_rate_params(p6);
-	Tester(0);		% FAIL if we reach here.
-catch x
-	Tester(x.identifier, 'Nucleus:Ensure_rate_params');
-	Tester(contains(x.message, 'implant stimulation rate'));
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 result = Tester;

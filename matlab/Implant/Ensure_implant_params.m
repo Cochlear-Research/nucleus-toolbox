@@ -39,8 +39,7 @@ p.MAX_CURRENT_uA    = 1750.0;
 p.CURRENT_BASE = p.MAX_CURRENT_uA / p.MIN_CURRENT_uA;
 
 % Pulse timing parameters:
+p = Ensure_field(p, 'min_phase_gap_us',    7.0);
 p = Ensure_field(p, 'min_phase_width_us', 25.0);
 p = Ensure_field(p, 'max_phase_width_us', 400.0);
-p = Ensure_field(p, 'phase_width_us', 25.0);
-p = Ensure_field(p, 'phase_gap_us',    7.0);
 p.MIN_SHORT_GAP_us = 12.0;

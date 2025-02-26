@@ -36,6 +36,23 @@ pp{5}.electrodes   = [22; 21; 18; 12;  8;  3];
 pp{5}.lower_levels = [10; 12; 11; 14;  7;  7];
 pp{5}.upper_levels = [99; 99; 99; 99; NaN; 99];  % NaN is illegal
 
+pp{6}.period_us         = 60;  % Too short for default phase width, phase gap
+
+pp{7}.period_us         = 72;
+pp{7}.phase_width_us    = 30;  % Too long for specified period
+
+pp{8}.phase_width_us    =  5;  % Shorter than minimum 
+
+pp{9}.phase_gap_us      =  5;  % Shorter than minimum 
+
+pp{10}.period_us        = NaN; % Illegal
+
+pp{11}.phase_width_us   = NaN; % Illegal
+
+pp{12}.phase_gap_us     = NaN; % Illegal
+
+pp{13}.phase_gap_us     = 30;  % Too long for default period
+
 for n = 1:length(pp)
     try
         Channel_mapping_proc(pp{n});

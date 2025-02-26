@@ -12,6 +12,7 @@ function q = Channel_mapping_proc(p, cseq)
 %                       (typically related to the maximum comfortable level).
 %   p.phase_width_us:   The phase width in microseconds (scalar).
 %   p.phase_gap_us:		The phase gap in microseconds (scalar).
+%   p.period_us:        The frame period in microseconds (scalar).
 %   cseq:     Channel-Magnitude sequence (struct).
 %
 % Returns:
@@ -34,7 +35,7 @@ switch nargin
 case 0	% Default parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	q = feval(mfilename, []);
+	q = feval(mfilename, struct);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 case 1	% Parameter calculations
@@ -45,8 +46,25 @@ case 1	% Parameter calculations
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Defaults:
 
-	p = Ensure_rate_params(p);
+    % Pulse timing parameters:
+	p = Ensure_implant_params(p);
+    p = Ensure_field(p, 'period_us',        70.0);
+    p = Ensure_field(p, 'phase_width_us',   25.0);
+    p = Ensure_field(p, 'phase_gap_us',      7.0);
 
+    % Checks are written so that NaNs produce errors:
+    if ~(p.phase_width_us >= p.min_phase_width_us)
+	    error('Nucleus:Channel_mapping', 'Phase width too short.');
+    end
+    if ~(p.phase_gap_us >= p.min_phase_gap_us)
+	    error('Nucleus:Channel_mapping', 'Phase gap too short.');
+    end
+    if ~(p.period_us >= (2 * p.phase_width_us + p.phase_gap_us + p.MIN_SHORT_GAP_us))
+	    error('Nucleus:Channel_mapping', 'Frame period too short.');
+    end
+
+    % Electrodes and current levels:
+    p = Ensure_electrodes(p);
 	p = Ensure_field(p,'modes',				MODE.MP1_2);
     if length(p.modes) > 1
 		error('Only constant mode is supported');
@@ -71,15 +89,14 @@ case 1	% Parameter calculations
     if ~all(p.lower_levels >= 0)
         error('Nucleus:Channel_mapping', 'lower_levels negative.');
     end 
-
     if ~all(p.upper_levels >= p.lower_levels)
 		error('Nucleus:Channel_mapping', 'Lower level exceeds upper level');
     end
 
-	p = Ensure_field(p,'full_scale',  		   1.0);
-	p = Ensure_field(p,'volume',			   100);
-	p = Ensure_field(p,'volume_type',		'standard');
-
+	p = Ensure_field(p, 'full_scale',  		    1.0);
+	p = Ensure_field(p, 'volume',			    100);
+	p = Ensure_field(p, 'volume_type',		'standard');
+    
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	q = p;	% Return parameters.
 

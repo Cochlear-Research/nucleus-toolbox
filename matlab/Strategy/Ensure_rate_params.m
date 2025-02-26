@@ -55,12 +55,6 @@ p.implant_stim_rate_Hz = p.channel_stim_rate_Hz * p.num_selected;
 period_tk = round(p.RF_clock_Hz / p.implant_stim_rate_Hz);
 p.period_us = 1e6 * period_tk / p.RF_clock_Hz;	% microseconds
 
-if (p.period_us < (2 * p.phase_width_us + p.phase_gap_us + p.MIN_SHORT_GAP_us))
-	implant_stim_rate_Hz = round(1e6 / p.period_us);
-	error("Nucleus:Ensure_rate_params", ...
-    '%d Hz implant stimulation rate too high for frame period_us.', implant_stim_rate_Hz);
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function p = Quantise_analysis_rate(p)
