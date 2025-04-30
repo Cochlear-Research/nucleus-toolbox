@@ -1,6 +1,9 @@
-function LGF_dB_demo(qq)
+function LGF_demo(qq)
 
-% LGF_demo: Plot Loudness Growth Function, for various parameters.
+% LGF_demo: Plot Loudness Growth Function.
+%
+% Args:
+%   qq:     Vector of Q values. Default: 20.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Copyright: Cochlear Ltd

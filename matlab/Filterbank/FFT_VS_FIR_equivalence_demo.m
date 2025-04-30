@@ -16,7 +16,7 @@ pv = FFT_VS_filterbank_proc(p);
 pf = p;
 bin_coeffs = zeros(pv.block_length/2 + 1, pv.block_length);
 nn = (0:(pv.block_length - 1))';
-rr = -2i * pi * nn / pv.block_length; % factor out common sub-expression from loopv.
+rr = -2i * pi * nn / pv.block_length; % factor out common sub-expression from loop.
 K = pv.block_length/2;
 for k = 0:K
     % Each bin impulse response is a modulated window function:
@@ -42,8 +42,10 @@ rms_delta = rms(u_delta(:))
 
 %% Plot shows no difference:
 figure, hold on;
-plot(real(uv(1, :)), 'r');
-plot(real(uf(1, :)), 'b');
+plot(real(uv(1, :)), 'r', 'DisplayName','FFT VS');
+plot(real(uf(1, :)), 'b', 'DisplayName','CFIR');
+legend();
+Window_title("Band 1");
 zoom xon
 
 %%
