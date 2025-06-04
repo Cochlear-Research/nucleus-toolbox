@@ -41,3 +41,5 @@ for k = 1:num_pulses
 		fprintf(fid, '%g%s', value, seps(n));
 	end
 end
+
+fclose(fid);
