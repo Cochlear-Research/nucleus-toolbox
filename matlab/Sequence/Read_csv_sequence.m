@@ -1,4 +1,4 @@
-function q = Read_csv_sequence(base_name)
+function q = Read_csv_sequence(file_name)
 
 % Read_csv_sequence: Read a sequence struct from a csv file.
 
@@ -7,7 +7,10 @@ function q = Read_csv_sequence(base_name)
 %   Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-file_name = strcat(base_name, '.csv');
+[~, ~, ext] = fileparts(file_name);
+if isempty(ext)
+	file_name = strcat(file_name, '.csv');
+end
 t = readtable(file_name);
 q = table2struct(t, 'ToScalar', true);
 

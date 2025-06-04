@@ -1,4 +1,4 @@
-function Save_csv_sequence(seq, base_name)
+function Save_csv_sequence(seq, file_name)
 
 % Save_csv_sequence: Save a sequence struct to a csv file.
 
@@ -7,7 +7,10 @@ function Save_csv_sequence(seq, base_name)
 %   Authors: Brett Swanson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-file_name = strcat(base_name, '.csv');
+[~, ~, ext] = fileparts(file_name);
+if isempty(ext)
+	file_name = strcat(file_name, '.csv');
+end
 fid = fopen(file_name, 'wt');
 if (fid == -1)
     error('Cannot open file');
@@ -31,10 +34,10 @@ num_pulses = max(field_lengths);
 for k = 1:num_pulses
 	for n = 1:num_fields
 		name = field_names{n};
-        value = seq.(name);
+		value = seq.(name);
 		if field_lengths(n) > 1
-            value = value(k);
-        end
+			value = value(k);
+		end
 		fprintf(fid, '%g%s', value, seps(n));
-    end
+	end
 end
