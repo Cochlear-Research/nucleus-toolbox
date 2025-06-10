@@ -1,6 +1,13 @@
-classdef Common_substruct_Test < matlab.unittest.TestCase
+classdef Test_Common_substruct < matlab.unittest.TestCase
 
-    methods (Test)
+% Test_Common_substruct: Class-based test of Common_substruct.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Copyright: Cochlear Ltd
+%   Authors: Brett Swanson
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	methods (Test)
 
         function bad_args(testCase)
             p1 = struct(a = 1, b = 2);

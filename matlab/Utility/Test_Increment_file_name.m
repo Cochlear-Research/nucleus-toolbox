@@ -1,6 +1,6 @@
-classdef Increment_file_name_test < matlab.unittest.TestCase
+classdef Test_Increment_file_name < matlab.unittest.TestCase
 
-% Increment_file_name_test: Class-based test of Increment_file_name.
+% Test_Increment_file_name: Class-based test of Increment_file_name.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Copyright: Cochlear Ltd
