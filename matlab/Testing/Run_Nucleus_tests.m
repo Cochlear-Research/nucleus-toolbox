@@ -6,9 +6,8 @@ function Run_Nucleus_tests()
 % These are assumed to on the path, and using the NTM testing framework.
 % It also calls any tests that use the MATLAB testing framework.
 % To avoid name conflicts, their names should start with "Test_".
-% A .log file is created containing the test results,
+% A .log file is created (using diary) containing the test results,
 % in a format that can be read by cochlear.sphinx.test_reporter.
-% At the end of the tests, logging is set to echo, with no file.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Copyright: Cochlear Ltd
@@ -66,4 +65,5 @@ fprintf(fid, 'ntm_duration_s: %4.1f\n', t);
 Save_YAML_test_results(fid, dt, framework_results);
 
 diary('off');
-Open_log echo ~file;
+% Reset to default name without creating a new diary file:
+set(0, 'DiaryFile', 'diary');
