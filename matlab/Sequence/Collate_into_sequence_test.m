@@ -60,6 +60,20 @@ qbi  = Collate_into_sequence_proc(pb, env_idle);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 3. Skip, no idle (e.g. ACE, with base level 0)
 
+% Maps with shorter epochs:
+p = struct;
+p.num_bands		        = 6;
+p.num_selected			= 4;
+p.period_us             = 100;
+
+p.channel_order_type	= 'apex_to_base';
+pa = Collate_into_sequence_proc(p);
+Tester(pa.epoch_us,	400);
+
+p.channel_order_type	= 'base_to_apex';
+pb = Collate_into_sequence_proc(p);
+Tester(pb.epoch_us,	400);
+
 % Replace some envelope samples with NaN:
 % (Reject_smallest_proc replaces smallest envelopes with NaN).
 skip = (rem(env, 3) == 0);	% Skip magnitudes that are divisible by 3.
@@ -134,7 +148,9 @@ qai_.channels   = a_(:,1);
 qai_.magnitudes = a_(:,3);
 qai_.periods_us	= 100;
 
-% Copy a_ but comment out (skip) magnitudes that are divisible by 3
+% Copy a_ but comment out (skip) magnitudes that are divisible by 3.
+% There are 4 pulses in each epoch.
+
 as_ = [
 	1	11	-1
 %	2	12	12
