@@ -21,7 +21,7 @@ catch
 end
 fprintf(fid, 'Platform: %s\n', computer('arch'));
 fprintf(fid, 'Computer: %s\n', Get_computer_id());
-date_time.Format = 'yyyy-MM-dd hh:mm:ss';
+date_time.Format = 'yyyy-MM-dd HH:mm:ss';
 fprintf(fid, 'date_time: %s\n', char(date_time));
 
 if exist('results', 'var')
@@ -31,10 +31,11 @@ if exist('results', 'var')
 	fprintf(fid, 'duration_s: %4.1f\n', duration);
 
 	rt = removevars(rt, {'Failed', 'Incomplete', 'Duration', 'Details'});
-	rt = renamevars(rt, 'Passed', 'Success');
-	s = yaml.dump(table2cell(rt));
+	c = table2cell(rt);
+	h = [{'Test'}, {'Success'}]; % Column headings
+	c = [h; c];
+	s = yaml.dump(c);
 
 	fprintf(fid, '%s\n', 'results:');
-	fprintf(fid, '%s\n', '- [Test, Success]');
 	fprintf(fid, '%s', s);
 end
