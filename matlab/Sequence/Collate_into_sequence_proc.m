@@ -49,6 +49,10 @@ case 1	% Parameter calculations
 	p = Ensure_field(p, 'epoch_us', p.period_us * p.num_selected);
 	p = Ensure_field(p, 'channel_order_type', 'base_to_apex');
 
+	if p.epoch_us < (p.period_us * p.num_selected)
+		error('Nucleus:Collate_into_sequence:epoch', 'Epoch too short.');
+	end
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Derived parameters:
 
@@ -58,7 +62,7 @@ case 1	% Parameter calculations
 		case 'apex_to_base'		% Low to high frequencies
 			p.channel_order	= (1:p.num_bands)';
 		otherwise
-			error('Only base_to_apex or apex_to_base implemented');
+			error('Nucleus:Collate_into_sequence:channel_order', 'Only base_to_apex or apex_to_base implemented.');
 	end
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,28 +75,30 @@ case 2	% Processing
 	[num_bands, num_epochs] = size(magnitude_ftm);
     assert(num_bands == p.num_bands)
 
-	q.channels = repmat(p.channel_order, num_epochs, 1);
-
-	reord_magnitude_ftm = magnitude_ftm(p.channel_order, :); % Re-order the channels (rows).
-	is_pulse = isfinite(reord_magnitude_ftm);		% Determine locations of pulses.
+	% Count the number of pulses in each epoch:
+	is_pulse = isfinite(magnitude_ftm);
 	num_selected = sum(is_pulse);	% Number of selected pulses in each epoch.
 	if ~all(num_selected == p.num_selected)
 		error('Nucleus:Collate_into_sequence:num_selected', 'Unexpected number of pulses in epoch.')
 	end
-		
+
+	% Reorder the channels and corresponding magnitudes:
+	q.channels = repmat(p.channel_order, num_epochs, 1);
+	reord_magnitude_ftm = magnitude_ftm(p.channel_order, :); % Re-order the channels (rows).
 	q.magnitudes = reord_magnitude_ftm(:);					% Concatenate columns.
+	% Remove skipped pulses:
 	skip = ~isfinite(q.magnitudes);
 	q.channels  (skip) = [];
 	q.magnitudes(skip) = [];
 
-	% Construct period vector (same for all epochs):
-	periods_us_vec = repmat(p.period_us, p.num_selected, 1);
-	epoch_us = sum(periods_us_vec);
-	excess_us = p.epoch_us - epoch_us;
+	% Calculate pulse timing:
+	excess_us = p.epoch_us - (p.period_us * p.num_selected);
 	if excess_us == 0
 		q.periods_us = p.period_us;		% Scalar indicates constant period for all pulses.
 	elseif excess_us > 0
-		% Adjust last period in each epoch:
+		% Construct period vector (same for all epochs):
+		periods_us_vec = repmat(p.period_us, p.num_selected, 1);
+		% Extend the last period in each epoch:
 		periods_us_vec(end) = periods_us_vec(end) + excess_us;
 		q.periods_us = repmat(periods_us_vec, num_epochs, 1);
 	else
