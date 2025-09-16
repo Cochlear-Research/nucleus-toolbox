@@ -14,13 +14,18 @@ function p = Ensure_rate_params(p)
 %   channel_stim_rate_Hz:  The peak number of pulses per second on a channel.
 % Derived parameters:
 %   block_shift:        The number of new samples in each block.
+%   epoch_us:			The duration of an epoch, in microseconds.
+%   epoch_tk:			The duration of an epoch, in ticks.
 %
-% The analysis_rate_Hz is quantised to a sub-multiple of the audio_sample_rate_Hz.
-% The channel_stim_rate_Hz may also be quantised, as follows:
+% Sound processing analysis occurs after an integer number of audio samples.
+% i.e. the analysis_rate_Hz is quantised to a sub-multiple of the audio_sample_rate_Hz.
+% Stimulation timing, including channel_stim_rate_Hz, is quantised by tick_us.
+% An epoch is defined as the reciprocal of the channel_stim_rate_Hz.
+% 
 % If the analysis_rate_Hz is specified, but not channel_stim_rate_Hz,
 % then the channel_stim_rate_Hz is set equal to the quantised analysis_rate_Hz.
 % If the channel_stim_rate_Hz is specified, but not analysis_rate_Hz,
-% then the analysis_rate_Hz is set equal to the quantised channel_stim_rate_Hz.
+% then the analysis_rate_Hz is set to the next available rate higher than channel_stim_rate_Hz.
 % If both the channel_stim_rate_Hz and analysis_rate_Hz are specified,
 % then the channel_stim_rate_Hz is not adjusted, and Resample_FTM_proc will be required.
 
@@ -36,28 +41,36 @@ end
 p = Ensure_implant_params(p);
 p = Ensure_field(p, 'audio_sample_rate_Hz', p.RF_clock_Hz / 320);
 
-if ~isfield(p, 'analysis_rate_Hz')
-	p = Ensure_field(p, 'channel_stim_rate_Hz', 1000);
-	p.analysis_rate_Hz = p.channel_stim_rate_Hz;
+if ~isfield(p, 'channel_stim_rate_Hz')
+	p = Ensure_field(p, 'analysis_rate_Hz', 975);
 	p = Quantise_analysis_rate(p);
 	p.channel_stim_rate_Hz = p.analysis_rate_Hz;
+	p = Quantise_channel_stim_rate(p);
 else
+	p = Quantise_channel_stim_rate(p);
+	p = Ensure_field(p, 'analysis_rate_Hz', p.channel_stim_rate_Hz);
 	p = Quantise_analysis_rate(p);
-	p = Ensure_field(p, 'channel_stim_rate_Hz', p.analysis_rate_Hz);
 end
 
-p = Ensure_electrodes(p);
-p = Ensure_field(p, 'num_selected',	min(p.num_bands, 12));
-
-p.interval_length = round(p.analysis_rate_Hz / p.channel_stim_rate_Hz);
-p.implant_stim_rate_Hz = p.channel_stim_rate_Hz * p.num_selected;
-
-period_tk = round(p.RF_clock_Hz / p.implant_stim_rate_Hz);
-p.period_us = 1e6 * period_tk / p.RF_clock_Hz;	% microseconds
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function p = Quantise_analysis_rate(p)
 
-p.block_shift = ceil(p.audio_sample_rate_Hz / p.analysis_rate_Hz);
+p.block_shift = floor(p.audio_sample_rate_Hz / p.analysis_rate_Hz);
 p.analysis_rate_Hz = p.audio_sample_rate_Hz / p.block_shift;
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function p = Quantise_channel_stim_rate(p)
+
+% Epoch duration is inverse of channel stimulation rate,
+% quantised to an integer number of ticks:
+[p.epoch_us, p.epoch_tk] = Quantise_us(p, 1e6 / p.channel_stim_rate_Hz);
+p.channel_stim_rate_Hz = 1e6 / p.epoch_us;
+
+end
+

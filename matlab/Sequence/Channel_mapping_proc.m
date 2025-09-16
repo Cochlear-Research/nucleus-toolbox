@@ -52,6 +52,10 @@ case 1	% Parameter calculations
     p = Ensure_field(p, 'phase_width_us',   25.0);
     p = Ensure_field(p, 'phase_gap_us',      7.0);
 
+	[p.period_us, p.period_tk]	= Quantise_us(p, p.period_us);
+	p.phase_width_us			= Quantise_us(p, p.phase_width_us);
+	p.phase_gap_us				= Quantise_us(p, p.phase_gap_us);
+
     % Checks are written so that NaNs produce errors:
     if ~(p.phase_width_us >= p.min_phase_width_us)
 	    error('Nucleus:Channel_mapping', 'Phase width too short.');

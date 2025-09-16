@@ -43,13 +43,17 @@ case 1	% Parameter calculations
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Defaults:
 
-	p = Ensure_field(p, 'num_bands', 22);
-	p = Ensure_field(p, 'num_selected', p.num_bands);
-	p = Ensure_field(p, 'period_us', 100);
-	p = Ensure_field(p, 'epoch_us', p.period_us * p.num_selected);
+	p = Ensure_implant_params(p);	
+    p = Ensure_electrodes(p);
+	p = Ensure_field(p, 'num_selected', 8);
+	p = Ensure_field(p, 'period_us', 70.0);
+	p = Ensure_field(p, 'epoch_us', 1000.0);
 	p = Ensure_field(p, 'channel_order_type', 'base_to_apex');
 
-	if p.epoch_us < (p.period_us * p.num_selected)
+	[p.period_us, p.period_tk]	= Quantise_us(p, p.period_us);
+	[p.epoch_us, p.epoch_tk]	= Quantise_us(p, p.epoch_us);
+
+	if p.epoch_tk < (p.period_tk * p.num_selected)
 		error('Nucleus:Collate_into_sequence:epoch', 'Epoch too short.');
 	end
 
@@ -91,15 +95,17 @@ case 2	% Processing
 	q.channels  (skip) = [];
 	q.magnitudes(skip) = [];
 
-	% Calculate pulse timing:
-	excess_us = p.epoch_us - (p.period_us * p.num_selected);
-	if excess_us == 0
+	% Calculate pulse timing in ticks, then convert to microseconds.
+	excess_tk = p.epoch_tk - (p.period_tk * p.num_selected);
+	if excess_tk == 0
 		q.periods_us = p.period_us;		% Scalar indicates constant period for all pulses.
-	elseif excess_us > 0
+	elseif excess_tk > 0
 		% Construct period vector (same for all epochs):
-		periods_us_vec = repmat(p.period_us, p.num_selected, 1);
+		periods_tk_vec = repmat(p.period_tk, p.num_selected, 1);
 		% Extend the last period in each epoch:
-		periods_us_vec(end) = periods_us_vec(end) + excess_us;
+		periods_tk_vec(end) = periods_tk_vec(end) + excess_tk;
+		% Convert to microseconds:
+		periods_us_vec = periods_tk_vec * p.tick_us;
 		q.periods_us = repmat(periods_us_vec, num_epochs, 1);
 	else
 		error('Nucleus:Collate_into_sequence:epoch', 'Pulses do not fit into epoch.')

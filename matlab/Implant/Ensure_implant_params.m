@@ -25,14 +25,23 @@ switch p.chip
     case 'CIC3'
         p.MIN_CURRENT_uA = 10.0;
         p.CL0_uA = p.MIN_CURRENT_uA;
+		num_cycles = 1;
 
     case 'CIC4'
         p.MIN_CURRENT_uA = 17.5;
         p.CL0_uA = 0.0;
+		num_cycles = 1;
 
-    otherwise
+    case 'NEXOS'
+        p.MIN_CURRENT_uA = 17.5;
+        p.CL0_uA = p.MIN_CURRENT_uA;
+		num_cycles = 4;
+
+	otherwise
         error('Unknown implant chip');
 end
+
+p.tick_us = num_cycles * 1e6 / p.RF_clock_Hz;
 
 p.MAX_CURRENT_LEVEL = 255;
 p.MAX_CURRENT_uA    = 1750.0;

@@ -20,7 +20,8 @@ case 1  % Parameter calculations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	p = Ensure_implant_params(p);
-    p = Ensure_field(p, 'keep_nans', 0);
+    p = Ensure_field(p, 'keep_nans', false);
+    p = Ensure_field(p, 'round_cl', true);
 
     cl = p;
 
@@ -37,7 +38,9 @@ case 2  % Processing
 
     ratio = uA / p.MIN_CURRENT_uA;
     cl = p.MAX_CURRENT_LEVEL * log(ratio) / log(p.CURRENT_BASE);
-    cl = round(cl);
+	if p.round_cl
+		cl = round(cl);
+	end
 
     if isequal(p.chip, 'CIC4')
         cl(uA == 0) = 0;

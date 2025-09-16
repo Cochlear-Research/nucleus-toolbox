@@ -13,8 +13,10 @@ verbose = Tester(mfilename);
 % Processing parameters:
 
 p = struct;
-p.num_bands		        = 6;
+p.electrodes		    = 22:-4:1;
+p.num_selected		    = 6;
 p.period_us             = 100;
+p.epoch_us				= 600;
 
 p.channel_order_type	= 'apex_to_base';
 pa = Collate_into_sequence_proc(p);
@@ -62,17 +64,16 @@ qbi  = Collate_into_sequence_proc(pb, env_idle);
 
 % Maps with shorter epochs:
 p = struct;
-p.num_bands		        = 6;
+p.electrodes		    = 22:-4:1;
 p.num_selected			= 4;
 p.period_us             = 100;
+p.epoch_us				= 400;
 
 p.channel_order_type	= 'apex_to_base';
 pa = Collate_into_sequence_proc(p);
-Tester(pa.epoch_us,	400);
 
 p.channel_order_type	= 'base_to_apex';
 pb = Collate_into_sequence_proc(p);
-Tester(pb.epoch_us,	400);
 
 % Replace some envelope samples with NaN:
 % (Reject_smallest_proc replaces smallest envelopes with NaN).
