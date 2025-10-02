@@ -33,16 +33,19 @@ Pass:   Write_log_test
 ---
 ntm_num_test: 32
 ntm_num_pass: 32
-ntm_duration_s:  2.2
-Nucleus Toolbox version: 5.1.4
+ntm_duration_s:  2.4
+Nucleus Toolbox version: 5.1.5
 User: bswanson
 MATLAB version: R2024b.4
 Platform: win64
 Computer: AUM-5K69RQ3
-date_time: 2025-06-10 03:22:37
-duration_s:  0.1
+date_time: 2025-10-02 16:55:16
+duration_s:  3.6
 results:
 - [Test, Success]
+- [Test_Save_YAML_results/empty, true]
+- [Test_Save_YAML_results/single, true]
+- [Test_Save_YAML_results/multiple, true]
 - [Test_Common_substruct/bad_args, true]
 - [Test_Common_substruct/absent_field, true]
 - [Test_Common_substruct/scalar_diff, true]
