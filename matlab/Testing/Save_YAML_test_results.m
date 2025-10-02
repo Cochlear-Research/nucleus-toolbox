@@ -2,7 +2,7 @@ function Save_YAML_test_results(fid, date_time, results)
 
 % Save_YAML_test_results: Save MATLAB testing framework results to YAML file.
 % The YAML file begins with "meta" information about the test environment.
-% It can be read by the Python module ``cochlear.sphinx.test_reporter``
+% It can be read by the Python module ``cochlear.sphinx.tst_report``
 % and converted to a Sphinx document table.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,7 +24,7 @@ fprintf(fid, 'Computer: %s\n', Get_computer_id());
 date_time.Format = 'yyyy-MM-dd HH:mm:ss';
 fprintf(fid, 'date_time: %s\n', char(date_time));
 
-if exist('results', 'var')
+if exist('results', 'var') && ~isempty(results)
 	% Convert results to a table:
 	rt = table(results);
 	duration = sum(rt.Duration);

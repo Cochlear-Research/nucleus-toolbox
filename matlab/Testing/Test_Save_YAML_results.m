@@ -35,6 +35,12 @@ classdef Test_Save_YAML_results < matlab.unittest.TestCase
 
 	methods (Test)
 
+		function empty(testCase)
+			r0 = matlab.unittest.TestResult.empty();
+			r = testCase.save_then_read(r0, 0, 'r0.yaml');
+			testCase.verifyTrue(isempty(r));		
+		end
+
 		function single(testCase)
 			r = testCase.save_then_read(testCase.r1, 1, 'r1.yaml');
 			testCase.verifyEqual(r{1}, {"nextmanager_test/testConstructor"; true});		
@@ -66,16 +72,22 @@ classdef Test_Save_YAML_results < matlab.unittest.TestCase
 			testCase.verifyTrue(isfield(y, 'MATLABVersion'));
 			testCase.verifyTrue(isfield(y, 'Platform'));
 			testCase.verifyTrue(isfield(y, 'Computer'));
-			testCase.verifyTrue(isfield(y, 'duration_s'));
 			% yaml.loadFile has UTC hard-wired:
 			date_time.TimeZone = 'UTC';
 			testCase.verifyEqual(y.date_time, date_time);
 
-			testCase.verifyTrue(isfield(y, 'results'));
-			r = y.results;
-			testCase.verifyEqual(length(r), len + 1);
-			testCase.verifyEqual(r{1}, {"Test"; "Success"});
-			r = r(2:end); % Return the remaining elements for checking.
+			if len > 0
+				testCase.verifyTrue(isfield(y, 'duration_s'));
+				testCase.verifyTrue(isfield(y, 'results'));
+				r = y.results;
+				testCase.verifyEqual(length(r), len + 1);
+				testCase.verifyEqual(r{1}, {"Test"; "Success"});
+				r = r(2:end); % Return the remaining elements for checking.
+			else
+				testCase.verifyFalse(isfield(y, 'duration_s'));
+				testCase.verifyFalse(isfield(y, 'results'));
+				r = [];
+			end
 		end
 	end
 

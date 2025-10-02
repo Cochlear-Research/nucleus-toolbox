@@ -3,11 +3,11 @@ function Run_Nucleus_tests()
 % Run_Nucleus_tests: Run the tests in the current directory and its sub-directories.
 %
 % It calls functions whose name ends with "_test".
-% These are assumed to on the path, and using the NTM testing framework.
-% It also calls any tests that use the MATLAB testing framework.
+% These are assumed to be on the path, and using the NTM testing framework.
+% It also calls any tests that use the MATLAB built-in testing framework.
 % To avoid name conflicts, their names should start with "Test_".
 % A .log file is created (using diary) containing the test results,
-% in a format that can be read by cochlear.sphinx.test_reporter.
+% in a format that can be read by cochlear.sphinx.tst_report.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Copyright: Cochlear Ltd
