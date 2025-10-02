@@ -1,0 +1,60 @@
+Pass:   Reject_fixed_channels_test
+Pass:   Reject_smallest_test
+Pass:   Resample_FTM_test
+Pass:   FFT_PS_envelope_test
+Pass:   FFT_filterbank_weights_test
+Pass:   Audio_mixer_test
+Pass:   Audio_test
+Pass:   FE_AGC_test
+Pass:   RMS_dB_SPL_test
+Pass:   LGF_alpha_test
+Pass:   Constrain_parameter_test
+Pass:   Find_split_process_test
+Pass:   Process_chain_test
+Pass:   Process_test
+Pass:   Channel_mapping_test
+Pass:   Collate_into_sequence_test
+Pass:   Concatenate_sequences_test
+Pass:   Ensure_electrodes_test
+Pass:   Get_pulse_times_test
+Pass:   Get_sequence_duration_test
+Pass:   Offset_current_levels_test
+Pass:   Plot_sequence_test
+Pass:   Remove_retain_channels_test
+Pass:   Save_read_csv_sequence_test
+Pass:   Subsequence_test
+Pass:   Amplitude_test
+Pass:   CIS_num_bands_test
+Pass:   Ensure_rate_params_test
+Pass:   Diff_log_file_test
+Pass:   Sum_test
+Pass:   Compare_structs_test
+Pass:   Write_log_test
+---
+ntm_num_test: 32
+ntm_num_pass: 32
+ntm_duration_s:  4.7
+Nucleus Toolbox version: 5.1.4
+User: bswanson
+MATLAB version: R2024b.2
+Platform: maca64
+Computer: NLKGT445HM
+date_time: 2025-06-10 04:20:19
+duration_s:  0.4
+results:
+- [Test, Success]
+- [Test_Common_substruct/bad_args, true]
+- [Test_Common_substruct/absent_field, true]
+- [Test_Common_substruct/scalar_diff, true]
+- [Test_Common_substruct/char_diff, true]
+- [Test_Increment_file_name/Char(io_name=foo0.txt_foo1.txt), true]
+- [Test_Increment_file_name/Char(io_name=x_37.doc_x_38.doc), true]
+- [Test_Increment_file_name/Char(io_name=q99.csv_q100.csv), true]
+- [Test_Increment_file_name/Char(io_name=12.log_13.log), true]
+- [Test_Increment_file_name/String(io_name=foo0.txt_foo1.txt), true]
+- [Test_Increment_file_name/String(io_name=x_37.doc_x_38.doc), true]
+- [Test_Increment_file_name/String(io_name=q99.csv_q100.csv), true]
+- [Test_Increment_file_name/String(io_name=12.log_13.log), true]
+- [Test_Increment_file_name/Path(path=.), true]
+- [Test_Increment_file_name/Path(path=foo), true]
+- [Test_Increment_file_name/Path(path=foo_bar), true]
