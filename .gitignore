@@ -11,11 +11,13 @@ __pycache__/
 # Doc files created by python scripts:
 sphinx/source/_generated
 
-# Log files produced by Run_nucleus_tests:
-# We ignore most of them, but unignore those used to create a release report:
+# Log files produced by Run_Nucleus_tests:
+# We ignore most of them, but unignore those used to create release reports:
 matlab/test_out/*
-!matlab/test_out/result_20250610_16*.log
-!matlab/test_out/result_20251002_16*.log
+# 5.1.4:
+!matlab/test_out/result_20250610_*.log
+# 5.1.5:
+!matlab/test_out/result_20251002_*.log
 
 # Sphinx-built doc files:
 build/
