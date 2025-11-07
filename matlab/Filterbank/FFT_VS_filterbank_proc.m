@@ -31,6 +31,7 @@ case 1	% Parameter calculations
 
     p = FFT_filterbank_proc(p);
 	p = Ensure_field(p,'equalise',  1);
+	p = Ensure_field(p,'retain_freq_response', false);	
 	p = Ensure_field(p,'num_freq_response_samples', 2048);
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,7 +75,7 @@ case 1	% Parameter calculations
 	% The DC bin's impulse response is p.window.
 	impulse_response = [p.window/2; zeros(p.num_freq_response_samples - p.block_length, 1)];
 	H0 = fft(impulse_response);
-	p.response_freqs_Hz = (0:(p.num_freq_response_samples-1))' * p.audio_sample_rate_Hz/p.num_freq_response_samples;
+	H0 = H0 / max(abs(H0));  % unity gain
 	
 	% Each bin response is a frequency-shifted copy of the DC bin's response.
 	n_bin = p.num_freq_response_samples/p.block_length;
@@ -85,15 +86,22 @@ case 1	% Parameter calculations
 	H = H.';	% transpose (without complex conjugation)
 
 	% Each channel frequency response is a weighted sum of FFT bin responses:
-	p.freq_response = p.weights * H;
+	freq_response = p.weights * H;
 
 	% Equalise the gains across channels:
-	p.vector_sum_gains = max(abs(p.freq_response), [], 2);	% Max of each channel (row)
+	p.vector_sum_gains = max(abs(freq_response), [], 2);	% Max of each channel (row)
 	if p.equalise
 		for band = 1:p.num_bands
 			p.weights(band, :) = p.weights(band, :) / p.vector_sum_gains(band);
 		end	
-		p.freq_response = p.weights * H;	% Recalculate with equalised weights.
+		freq_response = p.weights * H;	% Recalculate with equalised weights.
+	end
+
+	if p.retain_freq_response
+		% These fields are are not needed for processing, and are fairly large,
+		% so by default they are not saved in p struct:
+		p.freq_response = freq_response;
+		p.response_freqs_Hz = (0:(p.num_freq_response_samples-1))' * p.audio_sample_rate_Hz/p.num_freq_response_samples;
 	end
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

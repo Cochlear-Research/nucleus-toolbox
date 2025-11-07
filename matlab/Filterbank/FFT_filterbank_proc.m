@@ -3,7 +3,7 @@ function u = FFT_filterbank_proc(p, audio)
 % Quadrature FIR filterbank implemented with FFT.
 %
 % Args:
-%   p:      A struct containing the filterbank parameters.
+% 	p:   	Parameter struct.
 %   audio:  A sampled audio signal.
 %
 % Returns:
@@ -15,7 +15,7 @@ function u = FFT_filterbank_proc(p, audio)
 % - analysis_rate_Hz:      The number of input blocks analysed per second.
 % - window:                The FFT window.
 % - block_length:          The number of samples in an input block (FFT length).
-% 
+%
 % Derived parameters:
 %
 % - block_shift:           The number of new samples in each block.
@@ -30,9 +30,9 @@ function u = FFT_filterbank_proc(p, audio)
 % If block_length is supplied, then a Hann window is used.
 % If neither is supplied, then a 128-point Hann Window is used.
 %
-% The processing on each block consists of applying a window, 
+% The processing on each block consists of applying a window,
 % followed by an FFT.
-% The input is assumed to be a real signal, 
+% The input is assumed to be a real signal,
 % so half of the bins are discarded.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,7 +51,7 @@ case 0	% Default parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 case 1	% Parameter calculations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Fundamental parameters:
 
@@ -65,9 +65,10 @@ case 1	% Parameter calculations
 		p.block_length = length(p.window);
 	end
 
-	p = Ensure_field(p,'block_length', 128);
-	p = Ensure_field(p,'window',       Cos_window(p.block_length, 'Hann'));
-	
+	p = Ensure_field(p, 'block_length', 128);
+	p = Ensure_field(p, 'window',       Cos_window(p.block_length, 'Hann'));
+	p = Ensure_field(p, 'discard_symmetric_bins', true);
+
 	% Set to empty matrix to zero pad at start:
 	p = Ensure_field(p, 'buffer_opt', []);
 %	p = Ensure_field(p, 'buffer_opt', 'nodelay');
@@ -75,7 +76,8 @@ case 1	% Parameter calculations
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Derived parameters:
 
-	p.window_length = length(p.window);
+	p.window_gain = sum(p.window) / p.block_length;
+	p.fft_gain = p.window_gain * p.block_length / 2;
 	p.block_shift = ceil(p.audio_sample_rate_Hz / p.analysis_rate_Hz);
 	p.analysis_rate_Hz = p.audio_sample_rate_Hz / p.block_shift;
 
@@ -92,18 +94,21 @@ case 1	% Parameter calculations
 
 	p = Ensure_field(p,'best_freqs_Hz', p.bin_freqs_Hz);
 	p = Ensure_field(p,'sample_rate_Hz',p.analysis_rate_Hz);
-	
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	u = p;	% Return parameters.
-	
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 case 2	% Processing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	u = buffer(audio, p.block_length, p.block_length - p.block_shift, p.buffer_opt);
-	v = u .* repmat(p.window, 1, size(u,2));	% Apply window
+	v = u .* p.window;							% Apply window
 	u = fft(v);									% Perform FFT to give Frequency-Time Matrix
-	u(p.num_bins+1:end,:) = [];					% Discard the symmetric bins.
+    u = u / p.fft_gain;							% Provide unity gain.
+	if p.discard_symmetric_bins
+		u(p.num_bins+1:end,:) = [];				% Discard the symmetric bins.
+	end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
