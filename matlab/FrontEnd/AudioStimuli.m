@@ -70,7 +70,7 @@ classdef AudioStimuli < handle
 			end
 			assert (num_signal == num_noise);
 			audio = cell(num_signal, 1);
-			gap_n = self.gap_duration_s * self.audio_sample_rate_Hz;
+			gap_n = round(self.gap_duration_s * self.audio_sample_rate_Hz);
 			gap = zeros(gap_n, 1);
 			for n = 1:num_signal
 				signal = AudioStimuli.calibrate(self.stimuli{1}, self.audio_dB_SPL(1), signal_level(n));
